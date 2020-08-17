@@ -17,6 +17,7 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
-Route::get('/contact-importer', 'ContactController@index')->name('contactImporter');
+
+Route::get('/contact-importer', 'ContactController@index')->name('healthCheck');
 Route::post('/contact-importer', 'ContactController@uploadFile')->name('uploadFile');
 Route::put('/contact-importer', 'ContactController@importContacts')->name('importContacts');

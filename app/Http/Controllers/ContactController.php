@@ -18,9 +18,16 @@ class ContactController extends CsvHandlerController
      */
     public function index()
     {
-        $contactList = Contact::with('customAttributes')->get();
+        $contactList = Contact::with('customAttributes')->latest()
+                                                        ->limit(2)
+                                                        ->get();
+        $response = [
+            'success'   => true,
+            'status'    => 'OK',
+            'data_test' => $contactList
+        ];
         
-        return view('contact_list.index', compact('contactList'));
+        return response()->json($response, 200);
     }
 
     /**
