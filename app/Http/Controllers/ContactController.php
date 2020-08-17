@@ -39,7 +39,7 @@ class ContactController extends CsvHandlerController
         }
 
         $path = $this->fileImport( $request->file('csv-file') );
-        $sample = $this->getFileContent($path, $sample_length = 1);
+        $sample = $this->getFileContent($path, $sample_length = 3);
         
         if ( empty($sample) )            
             return response()->json(
