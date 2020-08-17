@@ -7,17 +7,5 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-#app {
-    margin-top: 50px;
-}
-
-input.custom-file-input:hover { cursor: pointer; }
-
-div.tb-spacer { margin: 10px 0px; }
-
-.fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-    opacity: 0;
-}
+// My Styles
+@import 'custom_styles';

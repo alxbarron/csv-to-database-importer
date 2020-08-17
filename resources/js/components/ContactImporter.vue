@@ -1,44 +1,57 @@
 <template>
     <div class="row">
         <div class="col-10 offset-1">
-            <div class="section jumbotron text-center" v-show="welcome">
-                <h1 class="title">Contact List CSV Importer</h1>
-                <h2 class="subtitle">Laravel + Vue</h2>
-                <p class="lead">Select a CSV file to import, then map the fields with the available options & import</p>
-                <button @click="init" class="btn btn-primary btn-lg">Enter</button>
-            </div>
+        <transition-group>
+            <JumbotronStep
+                v-if="welcome"
+                :key="'step-1'"
+                @changeState="init( $event )"/>
             
-            <transition name="fade">
-                <ContactCsvUploader
-                v-if="contactForm"/>
-            </transition>
+            <ContactCsvUploader
+                :key="'step-2'" v-if="contactForm"
+                @importedFile="finish( $event )"/>
+        
+            <JumbotronStep
+                :key="'step-3'" v-if="workDone"
+                :subtitle="'Your CSV file was imported successfully !!!'"
+                :content="'Tell me about what do you think or what would you do different.'"
+                :action="'Find the code'"
+                :link="'https://github.com/alxbastard/csv-to-database-importer'"/>
+        </transition-group>
         </div>
     </div>
 </template>
 
 <script>
-import ContactCsvUploader from './ContactCsvUploader.vue'
+import ContactCsvUploader from './ContactCsvUploader.vue';
+import JumbotronStep from './JumbotronStep.vue';
 
 export default {
     name: 'ContactImporter',
 
-    beforeMount ()  {
+    data: () => ({
+        welcome: false,
+        contactForm: false,
+        workDone: false
+    }),
+
+    mounted ()  {
         this.welcome = true;
     },
 
-    data: () => ({
-        welcome: false,
-        contactForm: false
-    }),
-
     methods: {
-        init () {
+        init (data) {
             this.welcome = false;
             this.contactForm = true;
+        },
+        finish (data){
+            this.contactForm = !data;
+            this.workDone = data;
         }
     },
 
     components: {
+        JumbotronStep,
         ContactCsvUploader
     }
 }

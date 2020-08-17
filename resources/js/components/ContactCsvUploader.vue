@@ -52,8 +52,6 @@ export default {
     name: 'ContactCsvUploader',
 
     data: () => ({
-        // file: null,
-        // file_ext: /(\.csv)$/i,
         csv: null,
         fields: null,
         data_sample: null,
@@ -91,11 +89,14 @@ export default {
             axios.put('/contact-importer', form_data)
                 .then(function (res) {
                     _this.complete = true;
+                    _this.$emit('importedFile', true);
                 })
                 .catch(function (err) {
                     alert.log(err.response);
                 })
-                .then(function () { _this.importing_records = false; });
+                .then(function () { 
+                    _this.importing_records = false;
+                });
 
         },
         buildImportRequest (_this) {
@@ -129,49 +130,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.over-layer {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    top: 0;
-    left: 0;
-    &__wrapper {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        height:60px;
-        width:60px;
-        margin:0px auto;
-        &.spinner {
-            -webkit-animation: rotation .6s infinite linear;
-            -moz-animation: rotation .6s infinite linear;
-            -o-animation: rotation .6s infinite linear;
-            animation: rotation .6s infinite linear;
-            border-left:6px solid rgba(0,174,239,.15);
-            border-right:6px solid rgba(0,174,239,.15);
-            border-bottom:6px solid rgba(0,174,239,.15);
-            border-top:6px solid rgba(0,174,239,.8);
-            border-radius:100%;
-        }
-    }
-}
+<style>
 
-@-webkit-keyframes rotation {
-   from {-webkit-transform: rotate(0deg);}
-   to {-webkit-transform: rotate(359deg);}
-}
-@-moz-keyframes rotation {
-   from {-moz-transform: rotate(0deg);}
-   to {-moz-transform: rotate(359deg);}
-}
-@-o-keyframes rotation {
-   from {-o-transform: rotate(0deg);}
-   to {-o-transform: rotate(359deg);}
-}
-@keyframes rotation {
-   from {transform: rotate(0deg);}
-   to {transform: rotate(359deg);}
-}
 </style>

@@ -52,11 +52,10 @@ export default {
     methods: {
         selectFile (event) {
             let elem = event.target;
-            if ( this.validateFile(elem, this.file_ext) ) {
-                this.valid_file = true;console.log(elem.files[0]);
-                this.file = elem.files[0];
-                // this.$emit('change', this.file);
-            }
+
+            this.valid_file = this.validateFile(elem, this.file_ext);
+
+            this.file = elem.files[0];
         },
         validateFile (element, allowedExtensions) {
             if ( !allowedExtensions.exec(element.value) || element.files[0].size > 200000 || element.files[0].size < 1000 ){
@@ -84,7 +83,7 @@ export default {
                     alert(err.response);
                 });
         },
-        uploadSuccess (data) {console.log(data);
+        uploadSuccess (data) {
             this.$emit('fileUploaded', data);
         },
         resetForm () {
