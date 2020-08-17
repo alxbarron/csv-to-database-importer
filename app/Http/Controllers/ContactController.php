@@ -90,23 +90,26 @@ class ContactController extends CsvHandlerController
         $csv_fields = collect($request->csv_field);
         $custom_fields = collect($request->custom_attr);
         
-        try {
-            foreach ($csv as $csv_line) {
-                $contact_data = $csv_fields->mapWithKeys(function ($item, $key) use ($csv_line) {
-                    return [$item => $csv_line[$key]];
-                });
-                $contact = Contact::create( $contact_data->toArray() );
-                
-                $custom_attributes = [];
-                foreach($custom_fields as $key => $value) {
-                    array_push($custom_attributes, ['key' => $value, 'value' => $csv_line[$key]]);
-                }
 
-                $contact->customAttributes()->createMany($custom_attributes);
+            foreach ($csv as $csv_line) {
+                try {
+                    $contact_data = $csv_fields->mapWithKeys(function ($item, $key) use ($csv_line) {
+                        return [$item => $csv_line[$key]];
+                    });
+                    $contact = Contact::create( $contact_data->toArray() );
+                    
+                    $custom_attributes = [];
+                    foreach($custom_fields as $key => $value) {
+                        array_push($custom_attributes, ['key' => $value, 'value' => $csv_line[$key]]);
+                    }
+
+                    $contact->customAttributes()->createMany($custom_attributes);
+                } catch (\Exception $e) {
+                    break;
+                    return response()->json(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
             }
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+       
         
 
         return response()->json(['success' => true], 200);

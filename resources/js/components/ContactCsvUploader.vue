@@ -1,23 +1,10 @@
 <template>
     <div class="wrapper">
     <transition-group>    
-        <div class="section" :key="'csv-upluad'" v-if="csv == null">
+        <div class="section" :key="'csv-upload'" v-if="csv == null">
             <h2 class="title">Import CSV File</h2>
-            <form @submit.prevent="uploadFile" enctype="multipart/form-data">
-                <div class="form-row">
-                    <div class="col-8 offset-1">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input form-control" id="csv-file" @change="selectFile">
-                            <label for="csv-file" class="custom-file-label">{{getFileInfo}}</label>
-                            <div class="invalid-feedback">Sorry, select a valid CSV file between 1kb - 200kb file size</div>
-                            <div class="valid-feedback">Awesome, you selected valid CSV file</div>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <button class="btn btn-info">Upload</button>
-                    </div>
-                </div>
-            </form>
+                <FileUpload
+                    @fileUploaded="setFileToImport( $event )"/>
         </div>
 
         <div class="section"
@@ -59,13 +46,14 @@
 
 <script>
 import ContactFieldMapper from './ContactFieldMapper.vue';
+import FileUpload from './FileUpload.vue';
 
 export default {
     name: 'ContactCsvUploader',
 
     data: () => ({
-        file: null,
-        file_ext: /(\.csv)$/i,
+        // file: null,
+        // file_ext: /(\.csv)$/i,
         csv: null,
         fields: null,
         data_sample: null,
@@ -89,41 +77,6 @@ export default {
     },
 
     methods: {
-        selectFile (event) {
-            let elem = event.target;
-            this.validateFile(elem, this.file_ext);
-            this.file = elem.files[0];               
-        },
-        validateFile (element, allowedExtensions) {
-            if ( !allowedExtensions.exec(element.value) || element.files[0].size > 200000 || element.files[0].size < 1000 ){
-                element.classList.add('is-invalid');
-                element.classList.remove('is-valid');
-            }
-            else {
-                element.classList.add('is-valid');   
-                element.classList.remove('is-invalid');   
-            } 
-        },
-        uploadFile () {
-            let _this = this,
-                data = new FormData();
-            data.append('csv-file', this.file);
-            axios.post('/contact-importer', data)
-                .then(function (res) {
-                    _this.setFileToImport(res.data.data);
-                })
-                .catch(function (err) {
-                    _this.file = null;
-                    _this.resetForm();
-                    alert(err.response);
-                });
-        },
-        resetForm () {
-            let form = document.querySelector('form'),
-                input = form.querySelector('input');
-            input.classList.remove('is-invalid');
-            form.reset();
-        },
         setFileToImport (data) {
             this.csv = data.csv_file;
             this.fields = data.fields;
@@ -170,6 +123,7 @@ export default {
     },
 
     components: {
+        FileUpload,
         ContactFieldMapper
     }
 }
